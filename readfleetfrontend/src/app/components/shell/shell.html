@@ -1,0 +1,42 @@
+<div class="app-layout" [class.nav-collapsed]="!navOpen">
+ 
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🌌</span>
+        <span class="logo-text">ReadFleet</span>
+      </div>
+      <button class="toggle-btn" (click)="toggleNav()">
+        {{ navOpen ? '◀' : '▶' }}
+      </button>
+    </div>
+
+    <nav class="nav-links">
+      <a
+        *ngFor="let item of navItems"
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        class="nav-item">
+        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-label">{{ item.label }}</span>
+      </a>
+    </nav>
+    </aside>
+
+    <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="page-breadcrumb">READFLEET COMMAND</span>
+      </div>
+      <div class="topbar-right">
+        <!-- I need to add a user profile icon/dropdown!! -->
+      </div>
+    </header>
+
+     <main class="page-content">
+      <router-outlet />
+    </main>
+    </div>
+    
+</div>
+

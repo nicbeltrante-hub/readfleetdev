@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@400;500;600;700&display=swap');
+
+:root{
+    --bg-primary: #090d1a;
+    --bg-sidebar: #0d1221;
+    --bg-card: #111827;
+    --border: rgba(255, 255, 255, 0.08);
+    --accent-cyan: #00d4ff;
+    --accent-purple: #8b5cf6;
+    --text-primary: #f0f4ff;
+    --text-muted: #6b7a99;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+button { font-family: inherit;}
+a { color: inherit;}
+
+body{ font-family: 'Orbitron';}
