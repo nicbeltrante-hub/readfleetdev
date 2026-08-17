@@ -11,6 +11,12 @@
       </button>
     </div>
 
+    <div class="flagship-card" *ngIf="flagship">
+      <div class="flagship-label">FLAGSHIP</div>
+      <div class="flagship-name">{{ flagship.name }}</div>
+      <div class="flagship-class">{{ flagship.shipClass | uppercase }}</div>
+    </div>
+
     <nav class="nav-links">
       <a
         *ngFor="let item of navItems"
@@ -21,15 +27,65 @@
         <span class="nav-label">{{ item.label }}</span>
       </a>
     </nav>
+
+    <div class="progress-section" *ngIf="user">
+      <div class="progress-label">
+        <span>Fleet Progress</span>
+        <span class="progress-pct">{{ progressToNext }}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progressToNext"></div>
+      </div>
+      <div class="progress-sublabel">
+        {{ user.totalPagesRead | number }} / {{ nextShipPages | number }} pages to next ship
+      </div>
+    </div>
     </aside>
 
     <div class="main-area">
-    <header class="topbar">
+    <header class="topbar" *ngIf="user">
       <div class="topbar-left">
         <span class="page-breadcrumb">READFLEET COMMAND</span>
       </div>
       <div class="topbar-right">
-        <!-- I need to add a user profile icon/dropdown!! -->
+        <div class="streak-badge">
+          🔥 {{ user.currentStreak }}-day streak
+        </div>
+        <div class="user-chip" (click)="toggleProfile()">
+          <div class="avatar">{{ user.avatarInitials }}</div>
+          <div class="user-info">
+            <span class="username">{{ user.username }}</span>
+            <span class="rank" [title]="rankDescription">{{ currentRank }}</span>
+          </div>
+          <span class="profile-caret">{{ profileOpen ? '▲' : '▼' }}</span>
+        </div>
+ 
+        <div class="profile-dropdown" *ngIf="profileOpen" (click)="$event.stopPropagation()">
+          <div class="pd-header">
+            <div class="pd-avatar">{{ user.avatarInitials }}</div>
+            <div>
+              <div class="pd-username">{{ user.username }}</div>
+              <div class="pd-joined">Member since {{ user.joinDate }}</div>
+            </div>
+          </div>
+ 
+          <div class="pd-rank-section">
+            <div class="pd-rank-row">
+              <span class="pd-rank-badge">{{ currentRank }}</span>
+              <span class="pd-rank-desc">{{ rankDescription }}</span>
+            </div>
+            <div class="pd-bar-wrap">
+              <div class="pd-bar">
+                <div class="pd-fill" [style.width.%]="rankProgress"></div>
+              </div>
+              <span class="pd-pct">{{ rankProgress }}%</span>
+            </div>
+            <div class="pd-next" *ngIf="pagesUntilNextRank > 0">
+              {{ pagesUntilNextRank | number }} pages to <strong>{{ nextRankName }}</strong>
+            </div>
+            <div class="pd-next" *ngIf="pagesUntilNextRank === 0">Max rank achieved</div>
+          </div>
+        </div>
       </div>
     </header>
 
