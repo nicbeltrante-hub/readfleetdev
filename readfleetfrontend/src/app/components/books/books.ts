@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReadingService } from '../../services/reading.service';
@@ -17,7 +17,7 @@ const COVER_COLORS = [
   styleUrl: './books.css'
 })
 export class Books implements OnInit {
-  books: Book[] = [];
+  books = signal<Book[]>([]);
   activeFilter: ReadStatus | 'all' = 'all';
  
   showAddForm = false;
@@ -49,7 +49,7 @@ export class Books implements OnInit {
   constructor(private readingService: ReadingService) {}
  
   ngOnInit() {
-    this.readingService.getBooks().subscribe(b => this.books = b);
+    this.readingService.getBooks().subscribe(b => this.books.set(b));
   }
  
   addBook() {
@@ -62,10 +62,10 @@ export class Books implements OnInit {
       totalPages: this.newTotalPages ?? 0,
       pagesRead: 0,
       status: this.newStatus,
-      coverColor: COVER_COLORS[this.books.length % COVER_COLORS.length],
+      coverColor: COVER_COLORS[this.books().length % COVER_COLORS.length],
       startDate: this.newStatus === 'reading' ? new Date().toISOString().split('T')[0] : undefined
     };
-    this.books = [...this.books, newBook];
+    this.books.set([...this.books(), newBook]);
     this.showAddForm = false;
     this.newTitle = ''; this.newAuthor = ''; this.newGenre = '';
     this.newTotalPages = null; this.newStatus = 'want-to-read';
@@ -82,15 +82,20 @@ export class Books implements OnInit {
   }
  
   saveEdit(book: Book) {
-    book.pagesRead = Math.min(this.editPagesRead ?? book.pagesRead, book.totalPages || Infinity);
-    book.status    = this.editStatus;
-    if (this.editRating !== null) book.rating = this.editRating;
-    if (this.editStatus === 'completed' && !book.endDate) {
-      book.endDate = new Date().toISOString().split('T')[0];
-    }
-    if (this.editStatus === 'reading' && !book.startDate) {
-      book.startDate = new Date().toISOString().split('T')[0];
-    }
+    const updatedPagesRead = Math.min(this.editPagesRead ?? book.pagesRead, book.totalPages || Infinity);
+    const updatedBook: Book = {
+      ...book,
+      pagesRead: updatedPagesRead,
+      status: this.editStatus,
+      rating: this.editRating !== null ? this.editRating : book.rating,
+      endDate: this.editStatus === 'completed' && !book.endDate
+        ? new Date().toISOString().split('T')[0] : book.endDate,
+      startDate: this.editStatus === 'reading' && !book.startDate
+        ? new Date().toISOString().split('T')[0] : book.startDate
+    };
+
+    this.books.set(this.books().map(b => b.id === book.id ? updatedBook : b));
+
     this.editingBookId = null;
     this.editingBook   = null;
   }
@@ -103,8 +108,8 @@ export class Books implements OnInit {
   setEditRating(n: number) { this.editRating = this.editRating === n ? null : n; }
  
   get filteredBooks(): Book[] {
-    if (this.activeFilter === 'all') return this.books;
-    return this.books.filter(b => b.status === this.activeFilter);
+    if (this.activeFilter === 'all') return this.books();
+    return this.books().filter(b => b.status === this.activeFilter);
   }
  
   progress(book: Book): number {
@@ -121,7 +126,7 @@ export class Books implements OnInit {
   }
  
   countByStatus(filter: ReadStatus | 'all'): number {
-    if (filter === 'all') return this.books.length;
-    return this.books.filter(b => b.status === filter).length;
+    if (filter === 'all') return this.books().length;
+    return this.books().filter(b => b.status === filter).length;
   }
 }

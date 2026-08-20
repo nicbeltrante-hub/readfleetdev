@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReadingService } from '../../services/reading.service';
@@ -20,11 +20,11 @@ import { ShipSvg } from '../shared/ship-svg/ship-svg';
   styleUrl: './dashboard.css'
 })
 export class Dashboard implements OnInit {
-  user: UserProfile | null = null;
-  currentlyReading: Book[] = [];
-  flagship: Ship | undefined;
-  activeMissions: Mission[] = [];
-  recentAchievements: Achievement[] = [];
+  user = signal<UserProfile | null>(null);
+  currentlyReading = signal<Book[]>([]);
+  flagship = signal<Ship | undefined>(undefined);
+  activeMissions = signal<Mission[]>([]);
+  recentAchievements = signal<Achievement[]>([]);
  
   constructor(
     private readingService: ReadingService,
@@ -33,36 +33,41 @@ export class Dashboard implements OnInit {
   ) {}
  
   ngOnInit() {
-    this.readingService.getUser().subscribe(u => this.user = u);
-    this.readingService.getCurrentlyReading().subscribe(b => this.currentlyReading = b);
-    this.fleetService.getFlagship().subscribe(s => this.flagship = s);
-    this.missionService.getActiveMissions().subscribe(m => this.activeMissions = m.slice(0, 3));
+    this.readingService.getUser().subscribe(u => this.user.set(u));
+    this.readingService.getCurrentlyReading().subscribe(b => {console.log('currentlyReading result:', b); this.currentlyReading.set(b)});
+    
+    this.fleetService.getFlagship().subscribe(s => this.flagship.set(s));
+    this.missionService.getActiveMissions().subscribe(m => this.activeMissions.set(m.slice(0, 3)));
     this.fleetService.getUnlockedAchievements().subscribe(a =>
-      this.recentAchievements = a.slice(-3).reverse()
+      this.recentAchievements.set(a.slice(-3).reverse())
     );
   }
  
   get readingProgress(): number {
-    if (!this.currentlyReading.length) return 0;
-    const b = this.currentlyReading[0];
+    if (!this.currentlyReading().length) return 0;
+    const b = this.currentlyReading()[0];
     return Math.round((b.pagesRead / b.totalPages) * 100);
   }
  
   get currentRank(): string {
-    return this.user ? getRank(this.user.totalPagesRead) : '';
+    const u = this.user();
+    return u ? getRank(u.totalPagesRead) : '';
   }
  
   get rankProgress(): number {
-    return this.user ? getRankProgress(this.user.totalPagesRead) : 0;
+    const u = this.user();
+    return u ? getRankProgress(u.totalPagesRead) : 0;
   }
  
   get pagesUntilNextRank(): number {
-    return this.user ? getPagesUntilNextRank(this.user.totalPagesRead) : 0;
+    const u = this.user();
+    return u ? getPagesUntilNextRank(u.totalPagesRead) : 0;
   }
  
   get nextRankName(): string {
-    if (!this.user) return '';
-    const tier = getRankTier(this.user.totalPagesRead);
+    const u = this.user();
+    if (!u) return '';
+    const tier = getRankTier(u.totalPagesRead);
     const idx = RANK_TIERS.findIndex(t => t.rank === tier.rank);
     return idx < RANK_TIERS.length - 1 ? RANK_TIERS[idx + 1].rank : 'Max Rank';
   }

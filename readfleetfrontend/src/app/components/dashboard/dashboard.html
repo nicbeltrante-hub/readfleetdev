@@ -1,49 +1,49 @@
 <div class="dashboard">
 
   <!-- User Greeting -->
-  <div class="greeting" *ngIf="user">
-    <h1>Welcome back, <span class="highlight">{{ user.username }}</span></h1>
-    <p class="subline">{{ currentRank }} · Fleet of {{ user.fleetSize }} ships · {{ user.totalBooksRead }} missions complete</p>
+  <div class="greeting" *ngIf="user()">
+    <h1>Welcome back, <span class="highlight">{{ user()!.username }}</span></h1>
+    <p class="subline">{{ currentRank }} · Fleet of {{ user()!.fleetSize }} ships · {{ user()!.totalBooksRead }} missions complete</p>
   </div>
  
   <!-- Stat Cards -->
-  <div class="stat-grid" *ngIf="user">
+  <div class="stat-grid" *ngIf="user()">
     <div class="stat-card">
       <div class="stat-icon">📄</div>
-      <div class="stat-value">{{ user.totalPagesRead | number }}</div>
+      <div class="stat-value">{{ user()!.totalPagesRead | number }}</div>
       <div class="stat-label">Pages Read</div>
     </div>
     <div class="stat-card">
       <div class="stat-icon">📚</div>
-      <div class="stat-value">{{ user.totalBooksRead }}</div>
+      <div class="stat-value">{{ user()!.totalBooksRead }}</div>
       <div class="stat-label">Books Complete</div>
     </div>
     <div class="stat-card accent-fire">
       <div class="stat-icon">🔥</div>
-      <div class="stat-value">{{ user.currentStreak }}</div>
+      <div class="stat-value">{{ user()!.currentStreak }}</div>
       <div class="stat-label">Day Streak</div>
     </div>
     <div class="stat-card accent-gold">
       <div class="stat-icon">🏆</div>
-      <div class="stat-value">{{ user.longestStreak }}</div>
+      <div class="stat-value">{{ user()!.longestStreak }}</div>
       <div class="stat-label">Best Streak</div>
     </div>
   </div>
  
   <div class="main-grid">
     <!-- Flagship -->
-    <div class="panel flagship-panel" *ngIf="flagship">
+    <div class="panel flagship-panel" *ngIf="flagship()">
       <div class="panel-header">
         <span class="panel-title">FLAGSHIP</span>
         <a routerLink="/fleet" class="panel-link">Full Fleet →</a>
       </div>
       <div class="ship-display">
-        <app-ship-svg [shipClass]="flagship.shipClass" [color]="flagship.color" size="large"></app-ship-svg>
+        <app-ship-svg [shipClass]="flagship()!.shipClass" [color]="flagship()!.color" size="large"></app-ship-svg>
         <div class="ship-info">
-          <div class="ship-name" [style.color]="flagship.color">{{ flagship.name }}</div>
-          <div class="ship-class-badge">{{ flagship.shipClass | uppercase }} CLASS</div>
-          <p class="ship-desc">{{ flagship.description }}</p>
-          <div class="ability-tag">⚡ {{ flagship.specialAbility }}</div>
+          <div class="ship-name" [style.color]="flagship()!.color">{{ flagship()!.name }}</div>
+          <div class="ship-class-badge">{{ flagship()!.shipClass | uppercase }} CLASS</div>
+          <p class="ship-desc">{{ flagship()!.description }}</p>
+          <div class="ability-tag">⚡ {{ flagship()!.specialAbility }}</div>
         </div>
       </div>
     </div>
@@ -54,8 +54,8 @@
         <span class="panel-title">ACTIVE TRANSMISSION</span>
         <a routerLink="/books" class="panel-link">All Logs →</a>
       </div>
-      <ng-container *ngIf="currentlyReading.length; else noReading">
-        <div class="book-row" *ngFor="let book of currentlyReading">
+      <ng-container *ngIf="currentlyReading().length; else noReading">
+        <div class="book-row" *ngFor="let book of currentlyReading()">
           <div class="book-cover-sm" [style.background]="book.coverColor">
             {{ book.title[0] }}
           </div>
@@ -83,7 +83,7 @@
         <span class="panel-title">ACTIVE MISSIONS</span>
         <a routerLink="/missions" class="panel-link">All Missions →</a>
       </div>
-      <div class="mission-row" *ngFor="let m of activeMissions">
+      <div class="mission-row" *ngFor="let m of activeMissions()">
         <div class="mission-icon">{{ m.icon }}</div>
         <div class="mission-info">
           <div class="mission-name">{{ m.title }}</div>
@@ -104,7 +104,7 @@
         <span class="panel-title">MEDALS EARNED</span>
         <a routerLink="/achievements" class="panel-link">All Medals →</a>
       </div>
-      <div class="achievement-row" *ngFor="let a of recentAchievements">
+      <div class="achievement-row" *ngFor="let a of recentAchievements()">
         <div class="ach-icon">{{ a.icon }}</div>
         <div class="ach-info">
           <div class="ach-title">{{ a.title }}</div>
@@ -112,7 +112,7 @@
         </div>
         <div class="ach-date" *ngIf="a.unlockedDate">{{ a.unlockedDate }}</div>
       </div>
-      <div class="empty-state" *ngIf="!recentAchievements.length">No medals earned yet.</div>
+      <div class="empty-state" *ngIf="!recentAchievements().length">No medals earned yet.</div>
     </div>
  
   </div>
