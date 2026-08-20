@@ -20,8 +20,8 @@ export class Shell implements OnInit{
  
   navItems = [
     { path: '/dashboard',    label: 'Bridge',    icon: '🛰️' },
-    { path: '/fleet',        label: 'Fleet',     icon: '🚀' },
     { path: '/books',        label: 'Logs',      icon: '📖' },
+    { path: '/fleet',        label: 'Fleet',     icon: '🚀' },
     { path: '/missions',     label: 'Missions',  icon: '⚡' },
     { path: '/battles',      label: 'Battles',   icon: '⚔️' },
     { path: '/achievements', label: 'Medals',    icon: '🏆' },
