@@ -1,0 +1,18 @@
+.ship-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ship-svg {
+      display: block;
+    }
+    .size-small  .ship-svg { width: 48px;  height: 48px; }
+    .size-medium .ship-svg { width: 80px;  height: 80px; }
+    .size-large  .ship-svg { width: 120px; height: 120px; }
+    .size-xl     .ship-svg { width: 180px; height: 180px; }
+    .lock-overlay {
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.6;
+    }

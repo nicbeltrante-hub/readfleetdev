@@ -34,12 +34,7 @@ export const RANK_TIERS: RankTier[] = [
 ];
  
 export function getRank(totalPages: number): string {
-  let current = RANK_TIERS[0];
-  for (const tier of RANK_TIERS) {
-    if (totalPages >= tier.minPages) current = tier;
-    else break;
-  }
-  return current.rank;
+  return getRankTier(totalPages).rank;
 }
  
 export function getRankTier(totalPages: number): RankTier {
