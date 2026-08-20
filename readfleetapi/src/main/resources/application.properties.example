@@ -1,0 +1,5 @@
+spring.application.name=readfleetapi
+spring.datasource.url=jdbc:postgresql://localhost:5432/readfleet_db
+spring.datasource.username=postgres
+spring.datasource.password=yourpassword
+spring.jpa.show-sql=true
