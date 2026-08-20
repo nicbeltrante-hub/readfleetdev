@@ -24,15 +24,17 @@
 
 .nav-collapsed .logo-text,
 .nav-collapased, .flagship-card,
-.nav-collapased, .progress-section
+.nav-collapased, .progress-section,
 .nav-collapsed .nav-label {
   display: none;
 }
 
-.nav-collapsed .nav-item {
+.nav-collapsed .nav-item .logo{
   justify-content: center;
   padding: 14px 0;
 }
+
+
  
 .sidebar-header {
   display: flex;
