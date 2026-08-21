@@ -1,8 +1,6 @@
 package com.beltrante.readfleetapi.dto;
 
 import com.beltrante.readfleetapi.model.ReadStatus;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -17,4 +15,6 @@ public class BookRequest {
     @Positive(message = "Page count must be positive.")
     private Integer totalPages;
     private ReadStatus status;
+    private String coverColor;
+
 }
