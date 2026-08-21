@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Book } from '../models/book.model';
+import { Book, BookRequest } from '../models/book.model';
 import { UserProfile } from '../models/user.model';
 import { DUMMY_BOOKS, DUMMY_USER } from '../data/dummy-data';
   
@@ -38,6 +38,10 @@ export class ReadingService {
         map(books => books.reduce((sum, b) => sum + b.pagesRead, 0))
         );
     }
+
+    addBook(book: BookRequest): Observable<Book> {
+        return this.http.post<Book>(`${this.apiUrl}/addBook`, book);
+     }
 }
  
  

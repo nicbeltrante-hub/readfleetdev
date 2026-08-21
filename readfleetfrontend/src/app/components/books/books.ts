@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReadingService } from '../../services/reading.service';
-import { Book, ReadStatus } from '../../models/book.model';
+import { Book, ReadStatus, BookRequest } from '../../models/book.model';
  
 const COVER_COLORS = [
   '#c27a2a','#2a5fc2','#1a7a4a','#7a2ac2','#c22a2a',
@@ -54,22 +54,29 @@ export class Books implements OnInit {
  
   addBook() {
     if (!this.newTitle.trim() || !this.newAuthor.trim()) return;
-    const newBook: Book = {
-      id: Date.now(),
+    
+    const bookPayload: BookRequest = {
       title: this.newTitle.trim(),
       author: this.newAuthor.trim(),
       genre: this.newGenre || 'General',
       totalPages: this.newTotalPages ?? 0,
-      pagesRead: 0,
-      status: this.newStatus,
-      coverColor: COVER_COLORS[this.books().length % COVER_COLORS.length],
-      startDate: this.newStatus === 'reading' ? new Date().toISOString().split('T')[0] : undefined
+      status: this.newStatus
     };
-    this.books.set([...this.books(), newBook]);
-    this.showAddForm = false;
-    this.newTitle = ''; this.newAuthor = ''; this.newGenre = '';
-    this.newTotalPages = null; this.newStatus = 'want-to-read';
-    this.activeFilter = newBook.status;
+
+    this.readingService.addBook(bookPayload).subscribe({
+    next: (savedBook : Book) => {
+      savedBook.coverColor = COVER_COLORS[this.books().length % COVER_COLORS.length];
+      this.books.set([...this.books(), savedBook]);
+
+      this.showAddForm = false;
+      this.newTitle = ''; this.newAuthor = ''; this.newGenre = '';
+      this.newTotalPages = null; this.newStatus = 'want-to-read';
+      this.activeFilter = savedBook.status;
+    },
+    error: (err) => {
+        console.error('Error saving book:', err);
+      }
+    });
   }
  
   openEdit(book: Book, event: Event) {

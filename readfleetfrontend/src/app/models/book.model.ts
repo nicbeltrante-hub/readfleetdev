@@ -13,3 +13,11 @@ export interface Book {
     endDate?: string;
     rating?: number;
 }
+
+export interface BookRequest {
+    title: string;
+    author: string;
+    genre: string;
+    totalPages: number;
+    status: ReadStatus;
+}
