@@ -33,8 +33,19 @@ export class Dashboard implements OnInit {
   ) {}
  
   ngOnInit() {
-    this.readingService.getUser().subscribe(u => this.user.set(u));
-    this.readingService.getCurrentlyReading().subscribe(b => {console.log('currentlyReading result:', b); this.currentlyReading.set(b)});
+    this.readingService.getUser().subscribe(u => {
+      this.readingService.getTotalPagesRead().subscribe(realTotalPages => {
+        this.readingService.getCompletedBooks().subscribe(realCompletedBooks => {
+    
+          this.user.set({
+            ...u,
+            totalPagesRead: realTotalPages,         
+            totalBooksRead: realCompletedBooks.length
+          });
+        });
+      });
+    });
+    this.readingService.getCurrentlyReading().subscribe(b => this.currentlyReading.set(b));
     
     this.fleetService.getFlagship().subscribe(s => this.flagship.set(s));
     this.missionService.getActiveMissions().subscribe(m => this.activeMissions.set(m.slice(0, 3)));

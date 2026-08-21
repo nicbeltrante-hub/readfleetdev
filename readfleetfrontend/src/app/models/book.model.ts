@@ -20,4 +20,11 @@ export interface BookRequest {
     genre: string;
     totalPages: number;
     status: ReadStatus;
+    coverColor: string;
+}
+
+export interface BookUpdateRequest {
+    pagesRead: number;
+    status: ReadStatus;
+    rating?: number | null;
 }

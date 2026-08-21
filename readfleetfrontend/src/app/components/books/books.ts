@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReadingService } from '../../services/reading.service';
-import { Book, ReadStatus, BookRequest } from '../../models/book.model';
+import { Book, ReadStatus, BookRequest, BookUpdateRequest } from '../../models/book.model';
  
 const COVER_COLORS = [
   '#c27a2a','#2a5fc2','#1a7a4a','#7a2ac2','#c22a2a',
@@ -54,18 +54,20 @@ export class Books implements OnInit {
  
   addBook() {
     if (!this.newTitle.trim() || !this.newAuthor.trim()) return;
-    
+
+    const assignedColor = COVER_COLORS[this.books().length % COVER_COLORS.length];
+
     const bookPayload: BookRequest = {
       title: this.newTitle.trim(),
       author: this.newAuthor.trim(),
       genre: this.newGenre || 'General',
       totalPages: this.newTotalPages ?? 0,
-      status: this.newStatus
+      status: this.newStatus,
+      coverColor: assignedColor
     };
 
     this.readingService.addBook(bookPayload).subscribe({
     next: (savedBook : Book) => {
-      savedBook.coverColor = COVER_COLORS[this.books().length % COVER_COLORS.length];
       this.books.set([...this.books(), savedBook]);
 
       this.showAddForm = false;
@@ -90,21 +92,26 @@ export class Books implements OnInit {
  
   saveEdit(book: Book) {
     const updatedPagesRead = Math.min(this.editPagesRead ?? book.pagesRead, book.totalPages || Infinity);
-    const updatedBook: Book = {
-      ...book,
-      pagesRead: updatedPagesRead,
+    
+    const updatePayload: BookUpdateRequest = {
+      pagesRead : updatedPagesRead,
       status: this.editStatus,
-      rating: this.editRating !== null ? this.editRating : book.rating,
-      endDate: this.editStatus === 'completed' && !book.endDate
-        ? new Date().toISOString().split('T')[0] : book.endDate,
-      startDate: this.editStatus === 'reading' && !book.startDate
-        ? new Date().toISOString().split('T')[0] : book.startDate
-    };
+      rating: this.editRating
+    }
 
-    this.books.set(this.books().map(b => b.id === book.id ? updatedBook : b));
+    this.readingService.updateBook(book.id, updatePayload).subscribe({
+      next: (updatedBook: Book) => {
+        updatedBook.coverColor = book.coverColor;
 
-    this.editingBookId = null;
-    this.editingBook   = null;
+        this.books.set(this.books().map(b => b.id === book.id ? updatedBook : b));
+
+        this.editingBookId = null;
+        this.editingBook   = null;
+      },
+      error: (err) => {
+        console.error('Failed to update book in database:', err);
+      }
+    });
   }
  
   cancelEdit() {

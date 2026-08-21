@@ -8,7 +8,11 @@ When fully developed, ReadFleet is going to be a full-stack application using An
 
 ## Current State
 
-Currently, I have both the dashboard and book log pages created in Angular and connected to a getBooks backend API. I am working off of dummy data for all other aspects of the application, and no other pages are created at this point. My next steps are: getting a working addBook api to successfully finish work on the log page, and then move on to the next pages!
+Currently, I have both the dashboard and book log pages created in Angular and connected to getBooks, addBook, and updateBook backend APIs. I am working off of dummy data for all other aspects of the application, and no other pages are created at this point.
+
+As it is right now, this is a working reading tracker! A user is able to add and update books, and their progress is stored.
+
+My next steps are: ensuring all parts of the dashboard come from the database, implementing a deleteBook api to remove unwanted book entries, and moving on to other pages!
 
 ## Explaining the App
 

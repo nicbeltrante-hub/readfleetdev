@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Book, BookRequest } from '../models/book.model';
+import { Book, BookRequest, BookUpdateRequest } from '../models/book.model';
 import { UserProfile } from '../models/user.model';
 import { DUMMY_BOOKS, DUMMY_USER } from '../data/dummy-data';
   
@@ -42,6 +42,11 @@ export class ReadingService {
     addBook(book: BookRequest): Observable<Book> {
         return this.http.post<Book>(`${this.apiUrl}/addBook`, book);
      }
+
+    updateBook(id: number, updateData: BookUpdateRequest): Observable<Book> {
+        return this.http.put<Book>(`${this.apiUrl}/updateBook/${id}`, updateData);
+    }
+
 }
  
  
